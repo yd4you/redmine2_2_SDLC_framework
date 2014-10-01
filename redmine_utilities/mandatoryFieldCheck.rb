@@ -6,7 +6,7 @@ require 'net/smtp'
 require 'date'
 
 begin
-    con = Mysql.new 'localhost', 'root', 'xxxxx', 'redmine_production'
+    con = Mysql.new 'localhost', 'root', 'passwd@vtx0', 'redmine_production'
     outputstr = String.new("")
     outputstr1 = String.new("")
     sqlstr = String.new("")
@@ -44,7 +44,7 @@ begin
 		sqlstr = sqlstr.concat("  INNER JOIN ( ")
 		sqlstr = sqlstr.concat("   SELECT p.id, p.name as `projectName` ")
 		sqlstr = sqlstr.concat("   FROM projects AS p ")
-		sqlstr = sqlstr.concat("   where p.id not in (7,8,9,11,12,15,50,51,31,35,49,37) ")
+		sqlstr = sqlstr.concat("   where p.id not in (7,8,9,11,12,15,50,51,31,35,49,37,63) ")
 		sqlstr = sqlstr.concat("  ) `p` on i.project_id = p.id ")
 		sqlstr = sqlstr.concat("  LEFT OUTER JOIN ")
 		sqlstr = sqlstr.concat("   ( select * from `custom_values` AS `cv` where cv.custom_field_id = 34 ) as `cv` ")
@@ -165,9 +165,9 @@ end
 
 if n_rows > 0 || n_rows1 > 0
 message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxxx.com
-To: xxxx@xxxx.com
-Subject: Mandatory Field Check - Task list
+From: RedmineAdmin-NoReply@nttdata.com
+To: NTTD_OSS@nttdata.com
+Subject: OSS : Mandatory Field Check - Task list
 
 Dear All
 
@@ -183,7 +183,7 @@ Following are the tasks need to be corrected with respective to following issues
 #{outputstr1}
 
 Regards
-xxxxxxx
+NTT DATA OSS Center
 -------------------------------------------------
 This is system genrated mail, please do not reply
 
@@ -191,32 +191,34 @@ This is system genrated mail, please do not reply
 MESSAGE_END
 
 
-else
+#else
 
-message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxx.com
-To: xxxxx@xxxxx.com
-Subject: Mandatory Field Check - Task list
+#message = <<MESSAGE_END
+#From: RedmineAdmin-NoReply@nttdata.com
+#To: NTTD_OSS@nttdata.com
+#Subject: OSS : Mandatory Field Check - Task list
 
-Dear All
+#Dear All
 
-Appreciate your efforts for updating proper status data for following criteria
-1) Remove "Remaining Hrs" following tasks since we are considering "Remaining Hrs" of sub tasks for status calculation. 
-2) Insert Estimated End Date or Due Date if it is blank. 
+#Appreciate your efforts for updating proper status data for following criteria
+#1) Remove "Remaining Hrs" following tasks since we are considering "Remaining Hrs" of sub tasks for status calculation. 
+#2) Insert Estimated End Date or Due Date if it is blank. 
 
-Regards
-XXXXXXXXXX
--------------------------------------------------
-This is system genrated mail, please do not reply
+#Regards
+#NTT DATA OSS Center
+#-------------------------------------------------
+#This is system genrated mail, please do not reply
 
 
-MESSAGE_END
+#MESSAGE_END
+
+ Net::SMTP.start('localhost') do |smtp|
+  	smtp.send_message message, 'yogesh.dhandal@nttdata.com','NTTD_OSS@nttdata.com'
+	#smtp.send_message message, 'yogesh.dhandal@nttdata.com','yogesh.dhandal@nttdata.com'
 
 end
 
- Net::SMTP.start('localhost') do |smtp|
-  	smtp.send_message message, 'xxxx@xxxx.com','xxxx@xxxx.com'
-	
+
 	
                              
  

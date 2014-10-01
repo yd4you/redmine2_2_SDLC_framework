@@ -6,7 +6,7 @@ require 'net/smtp'
 require 'date'
 
 begin
-    con = Mysql.new 'localhost', 'root', 'xxxxx', 'redmine_production'
+    con = Mysql.new 'localhost', 'root', 'passwd@vtx0', 'redmine_production'
     outputstr = String.new("")
     outputstr1 = String.new("")
     sqlstr = String.new("")
@@ -32,7 +32,7 @@ begin
 			sqlstr = sqlstr.concat("        INNER JOIN (   ")
 			sqlstr = sqlstr.concat("         SELECT p.id, p.name as `projectName`     ")
 			sqlstr = sqlstr.concat("         FROM projects AS p   ")
-			sqlstr = sqlstr.concat("         where p.id not in (7,8,9,11,12,15,51,31,35,49,37,50)   ")
+			sqlstr = sqlstr.concat("         where p.id not in (7,8,9,11,12,15,51,31,35,49,37,50,63)   ")
 			sqlstr = sqlstr.concat("        ) `p` on i.project_id = p.id     ")
 			sqlstr = sqlstr.concat("        LEFT OUTER JOIN     ")
 			sqlstr = sqlstr.concat("         ( select * from `custom_values` AS `cv` where cv.custom_field_id = 34 ) as `cv`   ")
@@ -49,7 +49,7 @@ begin
 			sqlstr = sqlstr.concat("        LEFT OUTER JOIN `trackers` as `tk` ON `i`.`tracker_id` = `tk`.`id`     ")
 			sqlstr = sqlstr.concat("     ) as `id`     ")
 			sqlstr = sqlstr.concat("     where id.tracker like 'User Story' and `id`.`status` in ('New','In Progress','Open')   ")
-			sqlstr = sqlstr.concat("     and ( (id.estimated_end_date < id.due_date) or (id.estimated_end_date is null or trim(id.estimated_end_date) = '') )   ")
+			sqlstr = sqlstr.concat("     and (id.estimated_end_date is not null and trim(id.estimated_end_date) <> '') and ( (id.estimated_end_date < id.due_date) or (id.estimated_end_date is null or trim(id.estimated_end_date) = '') )   ")
 			sqlstr = sqlstr.concat("     order by id.project_id asc, id.mail, id.issue_id asc   ")
 
 
@@ -83,9 +83,9 @@ end
 
 if n_rows > 0 || n_rows1 > 0
 message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxxxx.com
-To: xxxx@xxx.com
-Subject: SLA Delay Check - Task list
+From: RedmineAdmin-NoReply@nttdata.com
+To: NTTD.OSSCoreGroup@nttdata.com
+Subject: OSS : SLA Delay Check - Task list
 
 Dear All
 
@@ -100,17 +100,21 @@ whether any changes in Scope.
 
 
 Regards
-XXXXXXXXXXX
+NTT DATA OSS Center
 -------------------------------------------------
 This is system genrated mail, please do not reply
 
 
 MESSAGE_END
 
-end
 
  Net::SMTP.start('localhost') do |smtp|
-  	smtp.send_message message, 'xx@xxx.com','xxxxx@xxxxx.com'
+  	smtp.send_message message, 'yogesh.dhandal@nttdata.com','NTTD.OSSCoreGroup@nttdata.com','Nagappan.Palaniappan@nttdata.com'
+	#smtp.send_message message, 'yogesh.dhandal@nttdata.com','yogesh.dhandal@nttdata.com'
 
+end
+
+
+	
                              
 end

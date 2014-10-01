@@ -6,7 +6,7 @@ require 'net/smtp'
 require 'date'
 
 begin
-    con = Mysql.new 'localhost', 'root', 'xxx', 'redmine_production'
+    con = Mysql.new 'localhost', 'root', 'passwd@vtx0', 'redmine_production'
     outputstr = String.new("")
     sqlstr = String.new("")
     startDt = Date.today+1
@@ -14,6 +14,14 @@ begin
     emailid = String.new("")
     tempemailid = String.new("")
 
+#    sqlstr = sqlstr.concat("select  w.holiday, IF(u.firstname = 'NTTD OSS India','India Holiday',IF(u.firstname='NTTD OSS Japan','Japan Holiday',concat(u.firstname, ' ', u.lastname))) as `name` from wt_holidays w ")
+#    sqlstr = sqlstr.concat("left join users u ")
+#    sqlstr = sqlstr.concat("on w.created_by = u.id ")
+#    sqlstr = sqlstr.concat("where deleted_on Is Null And u.firstname Is Not Null ")
+#    sqlstr = sqlstr.concat("and `w`.holiday between STR_TO_DATE('01/01/2014', '%m/%d/%Y') and STR_TO_DATE('02/01/2014', '%m/%d/%Y')")
+
+##    sqlstr = sqlstr.concat("and `w`.holiday between STR_TO_DATE('#{startDt.strftime("%m/%d/%Y")}', '%m/%d/%Y') and STR_TO_DATE('#{endDt.strftime("%m/%d/%Y")}', '%m/%d/%Y')")
+#    sqlstr = sqlstr.concat(" order by w.holiday asc, u.firstname asc, u.lastname asc ")
 
                 sqlstr = sqlstr.concat(" select        ")
                 sqlstr = sqlstr.concat(" id.issue_id,id.due_date, id.estimatedRemainingHrs,id.`Actual_Remaining_Hrs`,IFNULL(id.UserName, 'Team Leader') UserName,id.projectName,id.tracker ")
@@ -50,7 +58,7 @@ begin
                 sqlstr = sqlstr.concat("             INNER JOIN (        ")
                 sqlstr = sqlstr.concat("                 SELECT p.id, p.name as `projectName`        ")
                 sqlstr = sqlstr.concat("                 FROM projects AS p        ")
-                sqlstr = sqlstr.concat("                 where p.id not in (7,8,9,11,12,15,51,31,35,49,37)        ")
+                sqlstr = sqlstr.concat("                 where p.id not in (7,8,9,11,12,15,51,31,35,49,37,63)        ")
                 sqlstr = sqlstr.concat("             ) `p` on i.project_id = p.id        ")
                 sqlstr = sqlstr.concat("              LEFT OUTER JOIN        ")
                 sqlstr = sqlstr.concat("               ( select * from  `custom_values` AS `cv` where cv.custom_field_id = 34 ) as `cv`        ")
@@ -122,13 +130,12 @@ end
 
 if n_rows > 0
 message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxxx.com
-To: xxxx@xxx
-Subject: To be Delayed Task list
+From: RedmineAdmin-NoReply@nttdata.com
+To: NTTD_OSS@nttdata.com
+Subject: OSS : To be Delayed Task list
 
 Dear All
 
-Following are the tasks showing "Getting delayed" status as per remaining hrs.
 Following are the tasks showing "Getting delayed" status as per remaining hrs.
 So request respective member to change "Due Date" according to "Remining Hrs"
 OR
@@ -137,7 +144,7 @@ Change the remaining hrs appropriately.
 #{outputstr}
 
 Regards
-XXXXXXXXXXX
+NTT DATA OSS Center
 -------------------------------------------------
 This is system genrated mail, please do not reply
 
@@ -146,7 +153,7 @@ MESSAGE_END
 
 
  Net::SMTP.start('localhost') do |smtp|
-  smtp.send_message message, 'xxxx@xxx.xxx','xxxx@xxx.com'
+  smtp.send_message message, 'yogesh.dhandal@nttdata.com','NTTD_OSS@nttdata.com'
                              
  end
 end

@@ -6,7 +6,7 @@ require 'net/smtp'
 require 'date'
 
 begin
-    con = Mysql.new 'localhost', 'root', 'xxxx', 'redmine_production'
+    con = Mysql.new 'localhost', 'root', 'passwd@vtx0', 'redmine_production'
     outputstr = String.new("")
     outputstr1 = String.new("")
     sqlstr = String.new("")
@@ -41,7 +41,7 @@ begin
 			sqlstr = sqlstr.concat("   INNER JOIN (         ")
 			sqlstr = sqlstr.concat("    SELECT p.id, p.name as `projectName`         ")
 			sqlstr = sqlstr.concat("    FROM projects AS p         ")
-			sqlstr = sqlstr.concat("    where p.id not in (7,8,9,11,12,15,50,51,31,35,49,37)         ")
+			sqlstr = sqlstr.concat("    where p.id not in (7,8,9,11,12,15,50,51,31,35,49,37,63)         ")
 			sqlstr = sqlstr.concat("   ) `p` on i.project_id = p.id         ")
 			sqlstr = sqlstr.concat("   LEFT OUTER JOIN         ")
 			sqlstr = sqlstr.concat("    ( select * from `custom_values` AS `cv` where cv.custom_field_id = 34 ) as `cv`         ")
@@ -144,9 +144,9 @@ end
 
 if n_rows > 0 || n_rows1 > 0
 message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxxx.com
-To: xxxx@xxxxx.com
-Subject: Status Correction Check - Task list
+From: RedmineAdmin-NoReply@nttdata.com
+To: NTTD_OSS@nttdata.com
+Subject: OSS : Status Correction Check - Task list
 
 Dear All
 
@@ -166,40 +166,42 @@ Following are the tasks need to be corrected with respective to following issues
 
 
 Regards
-xxxx Center
+NTT DATA OSS Center
 -------------------------------------------------
 This is system genrated mail, please do not reply
 
 
 MESSAGE_END
 
-else
+#else
 
-message = <<MESSAGE_END
-From: RedmineAdmin-NoReply@xxxxx.com
-To: xxxx@xxxxx.com
-Subject: Status Correction Check - Task list
+#message = <<MESSAGE_END
+#From: RedmineAdmin-NoReply@nttdata.com
+#To: NTTD_OSS@nttdata.com
+#Subject: OSS : Status Correction Check - Task list
 
-Dear All
+#Dear All
 
-Appreciate your efforts for updating proper status data for following criteria
+#Appreciate your efforts for updating proper status data for following criteria
+#
+#1) Remove "Remaining Hrs" following tasks since task is already showing Completed / Closed
+#2) Change the Status of "NEW" to "In Progress or other" if you spent some hrs on it
+#3) If the task is completed then please check the Verifying status and if already verified then please CLOSE it.
 
-1) Remove "Remaining Hrs" following tasks since task is already showing Completed / Closed
-2) Change the Status of "NEW" to "In Progress or other" if you spent some hrs on it
-3) If the task is completed then please check the Verifying status and if already verified then please CLOSE it.
+#Regards
+#NTT DATA OSS Center
+#-------------------------------------------------
+#This is system genrated mail, please do not reply
 
-Regards
-xxxxx Center
--------------------------------------------------
-This is system genrated mail, please do not reply
+#MESSAGE_END
 
-MESSAGE_END
+ Net::SMTP.start('localhost') do |smtp|
+  	smtp.send_message message, 'yogesh.dhandal@nttdata.com','NTTD_OSS@nttdata.com'
+	#smtp.send_message message, 'yogesh.dhandal@nttdata.com','yogesh.dhandal@nttdata.com'
+
 
 end
 
- Net::SMTP.start('localhost') do |smtp|
-  	smtp.send_message message, 'xx@xxx.com','xxxxx@xxxx.com'
-	
 	
                              
 end
